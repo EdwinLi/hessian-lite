@@ -643,7 +643,12 @@ public class SerializerFactory extends AbstractSerializerFactory {
                 deserializer = new ArrayDeserializer(Object.class);
         } else {
             try {
-                Class cl = Class.forName(type, false, _loader);
+                Class cl = null;
+                if (type.startsWith("com.alibaba.com.caucho.hessian.")) {
+                    cl = Class.forName(type, false, this.getClass().getClassLoader());
+                } else {
+                    cl = Class.forName(type, false, _loader);
+                }
                 deserializer = getDeserializer(cl);
             } catch (Exception e) {
                 log.warning("Hessian/Burlap: '" + type + "' is an unknown class in " + _loader + ":\n" + e);
